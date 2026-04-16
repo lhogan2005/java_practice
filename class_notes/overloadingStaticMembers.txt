@@ -1,0 +1,7 @@
+Constructor Chaining:
+* Look into *
+
+Tries to promote value given to values accepted.
+Happens when Java can't find exact match (types).
+Promotes to next one up from it until it finds value that can manage whats given.
+Try to promote to smallest possible

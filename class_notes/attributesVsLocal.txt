@@ -1,0 +1,90 @@
+* Attributes
+    * Belong outside of class.
+* Local variables:
+    * Exist only inside methods and are not accessible outside the method's.
+
+* This Keyword
+    * Refers to the current object (instance of the class in which it is used)
+
+For Classes
+
+* Passing current object as an argument:
+
+* When do we not need this?
+
+    * When there is N Name Conflicts
+    * No Ambiguity
+
+* what does Fridge fridge = new Fridge(50);
+               ^      ^      ^      ^
+            Class Name     Keyword
+                    variable name | call to the constructor of 
+                                    the Fridge class.
+
+* Reference Types in Java:
+
+    * What is a refercene type?
+        -> variable that stores the memory address of an object.
+
+* Arrays and ArrayLists:
+
+    * Arrays: Fixed-size, reference type behaviour.
+        * Modifications within methods affect the original array.
+
+    * ArrayLists:
+        * Resizable version of arrays, also reference types.
+        * Adding or removing 
+
+* Shallow Copy:
+    * Copy of refercene, not actual object.
+    * Both the original and the copied reference point to the same object in memory.
+    * Modifications...
+
+* Obejctive of OOP:
+    * Reduce repetition in code.
+
+Design Patterns:
+
+* Why use design patterns?
+
+
+Types of Design Patterns
+
+1. Creational Patterns:
+    * Focus on object creation.
+    * Example: singelton, Factory.
+
+2. Structural Patterns:
+    * Focus on class and object communications
+    ...
+
+Singleton Pattern:
+
+    * Simple and doesn't require inheritance, interfaces, or abstraction.
+    * Solves the problm of ensuring there's only one instance of a class globally.
+
+    * Where it is used?
+        * Logging
+        * COnfiguration settings
+        * Managing database connections.
+
+    for Singleton classes.
+    We use:
+        private class Singleton {
+            private static Singleton instance;
+
+            // Private constructor to prevent instantiation.
+            private Singleton() {
+                if (instance == null) {
+                    instance = new Singleton();
+                }
+                return instance;
+            }
+        }
+
+        public class Main {
+            public static void main(String[] args) {
+                Singleton s1 = Singleton.getInstance();
+                Singleton s2 = Singleton.getInstance();
+            }
+        }

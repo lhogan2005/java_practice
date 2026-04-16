@@ -1,0 +1,246 @@
+1.1 Association (uses-a): Printer uses documents
+
+    Document can exist independently of any printer. Printer does not "own" the document,
+    it only uses it while printing.
+
+        * Printer.print(document_1) -> typical usage example.
+        * If printer disappears, document still exists.
+
+    KEY IDEA: Document lifecycle doesn't depend on the printer.
+
+1.2 Aggregation (weak has-a): Printer has an InkCartirdge:
+
+    An ink cartridge can exist before its installed, and can exist after it is removed.
+
+    Examples:
+        * Can buy a cartridge and keep it in a drawer.
+        * Can remove a cartidge from printer and keep it.
+
+    So in our model:
+        * Printer has a reference to InkCartridge.
+        * the InkCartridge is not "destroyed" when you remove it from the printer.
+    
+    Key idea: cartridge lifecycle does not fully depend on printer.
+
+1.3 Composition (strong has-a): Printer owns PrinterConfig (internal component).
+
+* A PrinterConfig only makes sense as part of a Printer. We will:
+    * Create it inside the printer constructor,
+    * Never pass it from outside,
+    * Never allow it to exist on its own in the program.
+* If the Printer object is gone, the config is gone with it.
+
+* KEY IDEA: config lifecycle depends on printer.
+
+2. Why private/public matters here (Encapsulation):
+
+* 2.1 What goes wrong with public fields?
+If your fields are public, any code can break your object rules:
+
+    * set ink to negative:
+        cartridge.inkLevel = -100;
+    * set pages to 0:
+        doc.pages = 0;
+    * set pages to 0;
+        printer.cartridge = null;
+    * This creates impossible states and bugs that are hard to track.
+
+3. Class-by-class Code Examples:
+    IMPORTANT | This is a training example, not a submission.
+
+3.1 Class: Document
+
+* A Document is just data: title + pages. It exists independently of any printer. Because of that, the printer will only use it while printing (association).
+
+    class Document {
+        private String title; 
+        private int pages;
+
+        public Document(String document_title, int document_pages) {
+            if (pages <= 0) {
+                pages = 1;
+            }
+            title = document_title;
+            pages = document_pages;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public int getPages() {
+            return pages;
+        }
+    }
+
+3.2 Class InkCartridge:
+
+* An InkCartridge can exist on its own (you can buy it and store it). So Printer will have a cartridge reference, but the cartridge lifecycle is independent (aggregation).
+
+* We keep the ink levels private and only change it through methods.
+
+* Ink rule for this lab: 1 page = 2% ink.
+
+    class InkCartridge {
+        private String model;
+        private int inkLevel;
+
+        public InkCartridge(String model_name, int inkLevel) {
+            model = model_name;
+            setInkLevel(inkLevel);
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public int getInkLevel() {
+            return inkLevel;
+        }
+
+        public void setInkLevel (int newLevel) {
+            if (newLevel < 0) newLevel = 0;
+            if (newLevel > 100) newLevel = 100;
+            inkLevel = newLevel;
+        }
+
+        public boolean hasEnoughInkFor(int pages) {
+            int needed = pages * 2;
+            return ink level >= needed;
+        }
+        
+        public void consumeInkFor(int pages) {
+            int needed = pages * 2;
+            setInkLevel(inkLevel - needed);
+        }
+    }
+
+3.3 Class: PrinterConfig
+
+* PrinterConfig stores the "current printer setup" (owner and Wi-Fi settings). In this lab, we model it as composition; it is created inside the printer and belongs to it.
+* Fields in this config are private, and changes go through setters.
+
+IMPORTANT: yes storing passwords as plain text is not secure in real systems. We do it only as a simple training example.
+
+    class PrinterConfig {
+        private String ownerName;
+        private String wifiName;
+        private String wifiPassword;
+        private String firmwareVersion;
+
+        public PrinterConfig(String owner_Name, String wifi_Name, String wifi_Password, String firmware_Version) {
+            ownerName = owner_Name;
+            wifiName = wifi_Name;
+            wifiPassword = wifi_Password;
+            firmwareVersion = firmware_Version;
+        }
+
+        public String getOwnerName() {
+            return ownerName;
+        }
+
+        public void setOwnerName(String Name) {
+            if (Name == null || Name.trim().isEmpty())
+                return;
+            ownerName = Name;
+        }
+
+        public String getWifiName() {
+            return wifiPassword;
+        }
+
+        public void setWifiPassword(String Password) {
+            if (Password == null || Password.trim().isEmpty()) return;
+            wifiPassword = Password;
+        }
+
+        public String getFirmwareVersion() {
+            return firmwareVersion;
+        }
+
+        public void setFirmwareVersion(String Version) {
+            if (Version == null || Version.trim().isEmpty()) return;
+            firmwareVersion = Version;
+        }
+    }
+
+    NOTE: Can only get info from calling classes. Can only set password via external classes that run checks such as empty passwords.
+
+3.4 Class: Printer
+
+* Printer has two important relationships:
+
+    * Aggregation with InkCartridge (can install/remove it; cartridge can exist independently).
+    * Composition with PrinterConfig (created inside; belongs to this printer only).
+
+* The printer also uses Document while printing (association).
+
+    class Printer {
+        private String brand;
+
+        // Aggregation (weak has-a): can be installed/removed
+        private InkCartridge cartridge;
+
+        // Composition (strong has-a): ownder internal component
+        private PrinterConfig config;
+
+        // Still exist even when printer is gone.
+
+        public printer(String printer_band, String ownerName, String wifiName, String wifiPassword, String firmwareVersion) {
+            brand = printer_brand;
+
+            // Creted internally -> composition
+            // We call PrinterConfig constructor inside this class
+            // PrinterConfig object will be destroyed once Printer is gone
+            config = new PrinterConfig(ownerName, wifiName, wifiPassword, firmwareVersion);
+            
+            // This means that when printer is gone the instance of the config files are gone.
+        }
+
+        public String getBrand() {
+            return brand
+        }
+
+        public InkCartridge getCartridge() {
+            return cartridge;
+        }
+
+        public boolean hasCartridge() {
+            return cartridge != null;
+        }
+
+        public InkCartridge removeCartridge() {
+            InkCartridge tmp = cartridge;
+            cartridge = null;
+            return tmp;
+        }
+
+        public PrinterConfig getConfig() {
+            return config;
+        }
+
+        public int printer(Document doc) {
+            if (doc == null) return 0;
+            if (cartridge == null) return 0;
+
+            int pages = doc.getPages();
+            if (!cartridge.hasEnoughInkFor(pages)) {
+                return 0;
+            }
+
+            if (cartridge.consumeInkFor(pages)) {
+                return 0;
+            }
+
+            cartridge.consumeInkFor(pages);
+            return pages;
+        }
+    }
+
+    What to notice:
+
+    * Document exists independently of Printer (aggregation).
+    * InkCartridge exists independently of Printer (aggregation).
+    * PrinterConfig is created inside Printer and belongs to it (composition).
+    * Ink level changes only through methods (encapsulation).
+    * The printer refuses to print if there is no cartridge or not enough ink.

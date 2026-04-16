@@ -1,0 +1,56 @@
+A deep copy creates a new object and duplicates all fields, including non-primitive ones. This ensures that the new object is independent of the originial.
+
+Code Example: Deep Copy with a Person Class
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Person {
+    private String name;
+    private List<String> hobbies;
+
+    public Person(String name, List<String> hobbies) {
+        this.name = name;
+        this.hobbies = new ArrayList<>(hobbies); // Deep copy of the list
+    }
+
+    @Override
+    public String toString() {
+        return "Person{name='" + name + "', hobbies=" + hobbies + '}';
+    }
+
+    public void addHobby(String hobby) {
+        hobbies.add(hobby);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> hobbies = new ArrayList<>();
+        hobbies.add("Reading");
+        hobbies.add("Swimming");
+
+        Person original = new Person("Alice", hobbies);
+        Person deepCopy = new Person("Alice", hobbies); // Deep copy as it has a new instance of the arraylist at each call.
+
+        // Modify the original list
+        hobbies.add("Gaming");
+
+        //Modify one of the objects
+        original.addHobby("Singing");
+
+        System.out.println(original); // Person{name='Alice', hobbies=[Reading, Swimming, Singing]}
+        System.out.println(deepCopy); // Person{name='Alice', hobbies=[Reading, Swimming]}
+    }
+}
+
+Explanation:
+
+* The hobbies list is copied using new ArrayList<>(hobbies)
+* Modifications to the original list or to the list in any other instance of the class do not affect the deep copy since it uses its own independent list.
+
+Summary:
+
+1. Constructor Overloading provides multiple ways to initalize objects with varying details.
+2. Shallow Copy shares references, making changes in one object visible in the other.
+3. Deep copy duplicates all fields, ensuring objects are completely independent.

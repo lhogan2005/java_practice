@@ -1,0 +1,32 @@
+What is it?
+
+Non static -> all only apply to individual cat objects.
+
+    -> Can call on object but not on class.
+    -> Only individual cats not the class of a cat (blueprint of that class).
+    -> Class is only a blueprint.
+    -> Can't call the blueprint to meow for cat example.
+    -> If you try to name the class.name it errors because you can't name the entire class that name.
+
+Static -> Example: Holds total number of cats made in our object. Want to make static as its a common field accross all cat objects.
+
+Notes:
+------
+
+* In static methods we can't call any non-static fields.
+* Reason: Doesn't make sense.
+* Static operates at a class level not an object level.
+* Technically you can access static classes through individual objects.
+* Is discouraged. Accessed via instance.
+* Should always access static variables through static objects.
+    -> Reason: Confusing for new developers looking at code.
+        Looks like your changing one instance of that object not the global class.
+        
+* Final: creates a constant.
+
+* If method or field only needs to make sense for one object. Non static
+or
+* If it has to be different for every object of that class
+
+* If something has to be shared value accross all of the class
+    -> Probably good to be static.

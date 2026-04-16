@@ -1,0 +1,13 @@
+Example:
+
+* Developing a software for a printer.
+    * Has ink, can print documents and must decide whether printing is possible in current state.
+    
+    * How to model object relationship in Java:
+        * Association (uses-a): one object uses another temporarily (no ownership).
+        * Aggregation (weak has-a): one object has another object, but the contained object can exist independently.
+        * Composition (strong has-a): one object owns another object; owned object cannot exist independently (lifecycle is tied).
+
+    * We also introduct encapsulation:
+        * why fields should usually be private,
+        * how getters/setters provide controlled access and validation.

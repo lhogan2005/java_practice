@@ -1,0 +1,39 @@
+What is a shallow copy?
+
+Shallow copy creates a new object but shares references for any non-primitive fields. Changes made to shared references affect both the original and the copy.
+
+Code Example: Shallow Copy with a Person Class
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Person {
+    private String name;
+    private List<String> hobbies;
+
+    public Person(String name, List<String> hobbies) {
+        this.name = name;
+        this.hobbies = hobbies; // Shared reference
+    }
+    
+    @Override
+    public String toString() {
+        return "Person{name='" + name + "', hobbies=" + hobbies + '}';
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> hobbies = new ArrayList<>();
+        hobbies.add("Reading");
+        hobbies.add("Swimming");
+
+        Person original = new Person("Alice", hobbies);
+        Person shallowCopy = new Person("Alice", hobbies); // Shallow copy
+    }
+}
+
+Example
+
+* Both original and shallowCopy share the same hobbies list.
+* Modifying the hobbies list reflects in both objects since they share the same reference.

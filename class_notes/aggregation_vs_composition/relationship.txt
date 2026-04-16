@@ -1,0 +1,76 @@
+1.1 Association (uses-a): Printer uses Document
+
+* A document can exist independently of any printer. The printer does not "own" the document, only uses it while printing.
+    * Printer.print(document_1) typical usage example.
+    * If printer disappears, document still exists.
+* Key idea: document lifecycle does not depend on printer.
+
+1.2 Aggregation (weak has-a): Printer has an InkCartridge:
+
+* An ink cartridge can exist before it is installed, and it can exist after it is removed.
+
+* Examples in real life:
+    * You can buy a cartridge and keep it in a drawer.
+    * Can remove a cartridge from the printer and keep it.
+
+* So in our model:
+    * Printer has a reference to InkCartridge,
+    * but when the InkCartridge is not "destroyed" when you remove it from the printer.
+* Key Idea: cartridge lifecycle does not fully depend on printer.
+
+1.3 Composition (strong has-a): Printer owns PrinterConfig (internal component)
+
+* Demonstrate composition clearly, we'll add a small internal object: PrinterConfig.
+
+* A PrinterConfig only makes sense as part of a Printer. We will:
+    * Create it inside the printer constructor,
+    * never pass it from outside,
+    * never allow it to exist on its own in the program.
+
+* If the Printer object is gone, the config is gone with it.
+
+Key Idea: config lifecycle depends on printer.
+
+2. Why Private/Public matters here (encapsulation):
+
+2.1 What goes wrong with public fields?
+* If your fields are public, any code can break your object rules: (Solution: create private fields and use public classes to adjust values based on a list of rules)
+    * Set ink to negative
+        cartridge.inkLevel = -100;
+    * Set pages to 0:
+        doc.pages = 0;
+    * remove a cartridge without using your safe method:
+        printer.cartridge = null;
+    This creates impossible states and bugs that are hard to track.
+
+3. Class-by-class Code Examples:
+    IMPORTANT: This is a training example, not a submission.
+
+3.1 Class: Document:
+
+* A Document is just data: title + pages. It exists independently of any printer. Because of that, the printer will only use it while printing (assocition)
+
+    class Document {
+        private String title;
+        private int pages;
+
+        // Constructor - a method that creates an instance
+        public Document(String document_title, int document_pages) {
+            if (pages <= 0) {
+                pages = 1;
+            }
+            title = document_title;
+            pages = document_pages;
+            }
+
+            public String getTitle() {
+                return title;
+            }
+
+            public int getPages() {
+                return pages;
+            }
+        }
+3.2 Class: InkCartridge
+
+* An inkLevelf
