@@ -1,60 +1,80 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 
 class TrieNode {
     char value;
-    List <Character> child;
-    boolean isEnd;
+    Map<Character, TrieNode> children;
+    boolean isEndOfWord;
 
-    public TrieNode(char value, TrieNode child) {
+    public TrieNode(char value) {
         this.value = value;
-        this.isEnd = false;
-        this.child = new ArrayList<>();
+        this.children = new HashMap<>();
+        this.isEndOfWord = false;
     }
 
     public void markAsLeaf() {
-        this.isEnd = true;
+        this.isEndOfWord = true;
     }
 }
 
-class PrefixTree {
-    List<Character> root;
-    char[] letters;
+public class PrefixTree {
+    private TrieNode root;
 
-    public PrefixTree(String word) {
-        this.letters = word.toCharArray();
-        this.root = new ArrayList<>();
+    public PrefixTree() {
+        root = new TrieNode('\0');
     }
 
     public void insert(String word) {
-        // Inserts word into tree
-        // Takes in a string that is word.
-        // Makes it a character array.
-        // Checks for our characters one by one seeing if there in our tree currently.
-        // If they are continue with that branch.
-        // If they aren't create a new branch.
+        TrieNode current = root;
+
+        for (char ch : word.toCharArray()) {
+            current.children.putIfAbsent(ch, new TrieNode(ch));
+            current = current.children.get(ch);
+        }
+
+        current.markAsLeaf();
     }
 
     public boolean search(String word) {
-        // Checks for word in tree
-        // Takes word, parses it.
-        // Looks letter by letter seeing if its in the tree
-        // As soon as the letter is not present return false
-        boolean found = false;
-        for (letter : word) {
-            if (letter)
-        }
+        TrieNode node = findNode(word);
+        return node != null && node.isEndOfWord;
     }
 
     public boolean startsWith(String prefix) {
-        // Checks if any word in the tree starts with the given prefix
-        // Same as search looking only until we find all of our prefix letter or are missing one.
+        return findNode(prefix) != null;
+    }
+
+    private TrieNode findNode(String str) {
+        TrieNode current = root;
+
+        for (char ch : str.toCharArray()) {
+            if (!current.children.containsKey(ch)) {
+                return null;
+            }
+            current = current.children.get(ch);
+        }
+
+        return current;
     }
 
     public void traverse() {
-        // Recursivly prints the tree structure
-        // Use DFS
+        traverseHelper(root, "");
+    }
+
+    private void traverseHelper(TrieNode node, String indent) {
+        for (Map.Entry<Character, TrieNode> entry : node.children.entrySet()) {
+            TrieNode child = entry.getValue();
+
+            System.out.print(indent + "  └── " + child.value);
+
+            if (child.isEndOfWord) {
+                System.out.print(" (end)");
+            }
+
+            System.out.println();
+
+            traverseHelper(child, indent + "  ");
+        }
     }
 }
-
-// Operation should split word into its each individual letters
